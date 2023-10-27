@@ -3,14 +3,13 @@ import { StyleSheet, Text, View ,Image,SafeAreaView, TouchableOpacity,TextInput}
 import { Ionicons,Octicons,AntDesign,MaterialIcons } from '@expo/vector-icons';
 //import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from './homepage';
-
+import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppLoading from 'expo-app-loading';
+// import AppLoading from 'expo-app-loading';
 
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -38,6 +37,7 @@ function AuthStack() {
 
 function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
+  const navigation = useNavigation();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -47,16 +47,26 @@ function AuthenticatedStack() {
       }}
     >
       <Stack.Screen
-        name="Welcome"
+        name="Explorer"
         component={WelcomeScreen}
         options={{
+          headerLeft: ({ tintColor }) => (
+            <View style={{ flexDirection: 'row' }}>
+              <IconButton
+                icon="person" 
+                color={tintColor}
+                size={24}
+                onPress={() => navigation.navigate('profile')} 
+              />
+            </View>
+          ),
           headerRight: ({ tintColor }) => (
-            <IconButton
-              icon="exit"
-              color={tintColor}
-              size={24}
-              onPress={authCtx.logout}
-            />
+              <IconButton
+                icon="exit"
+                color={tintColor}
+                size={24}
+                onPress={authCtx.logout}
+              />
           ),
         }}
       />
@@ -94,9 +104,9 @@ function Root() {
     fetchToken();
   }, []);
 
-  if (isTryingLogin) {
-    return <AppLoading />;
-  }
+  // if (isTryingLogin) {
+  //   return <AppLoading />;
+  // }
 
   return <Navigation />;
 }
@@ -116,65 +126,3 @@ export default function App() {
 
 
 
-// function LocalActivity() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Any events will be posted here!</Text>
-//     </View>
-//   );
-// }
-
-// function Tourist() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Tourist View!</Text>
-//     </View>
-//   );
-// }
-
-// function Settings() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Reporting a crime incident!</Text>
-//     </View>
-//   );
-// }
-
-// const Tab = createBottomTabNavigator();
-
-// export default function App() {
-//   return (
-    
-//     <NavigationContainer>
-//       <Tab.Navigator
-//         screenOptions={({ route }) => ({
-//           tabBarIcon: ({ focused, color, size }) => {
-//             let iconName;
-
-//             if (route.name === 'Home') {
-//               iconName = focused
-//                 ? 'ios-information-circle'
-//                 : 'ios-information-circle-outline';
-//             } else if (route.name === 'Settings') {
-//               iconName = focused ? 'ios-list' : 'ios-list-outline';
-//             }else if(route.name==='Tourist'){
-//               iconName = focused ? 'film' : 'film-outline';
-//             }else if(route.name==='Local Activity'){
-//               iconName = focused ? 'ios-calendar' : 'ios-calendar-outline'
-//             }
-
-//             // You can return any component that you like here!
-//             return <Ionicons name={iconName} size={size} color={color} />;
-//           },
-//           tabBarActiveTintColor: 'tomato',
-//           tabBarInactiveTintColor: 'gray',
-//         })}
-//       >
-//         <Tab.Screen name="Home" component={HomeScreen} />
-//         <Tab.Screen name="Local Activity" component={LocalActivity} />
-//         <Tab.Screen name="Tourist" component={Tourist} />
-//         <Tab.Screen name="Settings" component={Settings} />
-//       </Tab.Navigator>
-//     </NavigationContainer>
-//   );
-// }
